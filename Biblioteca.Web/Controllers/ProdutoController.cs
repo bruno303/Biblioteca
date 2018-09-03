@@ -1,15 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Biblioteca.Web.Controllers
 {
     public class ProdutoController : Controller
     {
-        // GET: Produto
+        #region Métodos para listagem dos cadastros
+        public ActionResult CadProduto()
+        {
+            return View();
+        }
+
+        public ActionResult CadProdutoTipo()
+        {
+            return View();
+        }
+
+        public ActionResult CadEditora()
+        {
+            return View();
+        }
+
+        public ActionResult CadAutor()
+        {
+            return View();
+        }
+
+        #endregion
+
+        #region Exemplos
         public ActionResult Index()
         {
             return View();
@@ -89,5 +108,7 @@ namespace Biblioteca.Web.Controllers
                 return View();
             }
         }
+
+        #endregion
     }
 }

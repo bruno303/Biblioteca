@@ -53,13 +53,6 @@ namespace Biblioteca.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                       name: "produto",
-                       template: "{controller=Produto}/{action=Index}/{id?}");
-            });
         }
     }
 }
