@@ -20,4 +20,9 @@
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Biblioteca.Dominio\Biblioteca.Dominio.csproj" />
+    <ProjectReference Include="..\Biblioteca.Repositorio\Biblioteca.Repositorio.csproj" />
+  </ItemGroup>
+
 </Project>

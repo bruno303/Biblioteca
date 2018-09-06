@@ -1,4 +1,4 @@
-﻿
+﻿@model List<Biblioteca.Dominio.ProdutoTipo>
 @{
     ViewData["Title"] = "Cadastro de Tipos de Produto";
 }
@@ -12,90 +12,52 @@
             <thead>
                 <tr>
                     <th>
-                        #
+                        ID
                     </th>
                     <th>
-                        Product
+                        DESCRIÇÃO
                     </th>
                     <th>
-                        Payment Taken
+                        PRAZO
                     </th>
                     <th>
-                        Status
+                        MULTA (P/DIA)
+                    </th>
+                    <th>
+                        ATIVO
+                    </th>
+                    <th>
+                        Ações
                     </th>
                 </tr>
             </thead>
             <tbody>
+                @foreach (var item in Model)
+                {
                 <tr>
                     <td>
-                        1
+                        @Html.DisplayTextFor(p => item.IdProdutoTipo)
                     </td>
                     <td>
-                        TB - Monthly
+                        @Html.DisplayTextFor(p => item.Descricao)
                     </td>
                     <td>
-                        01/04/2012
+                        @Html.DisplayTextFor(p => item.Prazo)
                     </td>
                     <td>
-                        Default
+                        @Html.DisplayTextFor(p => item.VlMulta)
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(p => item.Ativo)
+                    </td>
+                    <td>
+                        @{
+                            string url = "/Produto/EditarProdutoTipo/" + item.IdProdutoTipo.ToString();
+                        }
+                        <a href=@url><button class="btn btn-sm btn-success" type="button">Editar</button></a>
                     </td>
                 </tr>
-                <tr class="table-active">
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        01/04/2012
-                    </td>
-                    <td>
-                        Approved
-                    </td>
-                </tr>
-                <tr class="table-success">
-                    <td>
-                        2
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        02/04/2012
-                    </td>
-                    <td>
-                        Declined
-                    </td>
-                </tr>
-                <tr class="table-warning">
-                    <td>
-                        3
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        03/04/2012
-                    </td>
-                    <td>
-                        Pending
-                    </td>
-                </tr>
-                <tr class="table-danger">
-                    <td>
-                        4
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        04/04/2012
-                    </td>
-                    <td>
-                        Call in to confirm
-                    </td>
-                </tr>
+                            }
             </tbody>
         </table>
     </div>

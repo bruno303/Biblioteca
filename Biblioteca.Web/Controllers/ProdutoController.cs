@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Biblioteca.Dominio;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Biblioteca.Web.Controllers
 {
@@ -8,21 +10,31 @@ namespace Biblioteca.Web.Controllers
         #region Métodos para listagem dos cadastros
         public ActionResult CadProduto()
         {
-            return View();
+            List<Produto> produtos = new Repositorio.Repositorio().SelecionarProdutos();
+            return View(produtos);
         }
 
         public ActionResult CadProdutoTipo()
         {
+            List < ProdutoTipo> tiposProduto = new Repositorio.Repositorio().SelecionarTiposProdutos();
+            return View(tiposProduto);
+        }
+
+        public ActionResult EditarProdutoTipo(int id)
+        {
+            ViewData["idProdutoTipo"] = id;
             return View();
         }
 
         public ActionResult CadEditora()
         {
+            List<Editora> editoras = new Repositorio.Repositorio().SelecionarEditoras();
             return View();
         }
 
         public ActionResult CadAutor()
         {
+            List<Autor> autores = new Repositorio.Repositorio().SelecionarAutores();
             return View();
         }
 
