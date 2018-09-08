@@ -8,6 +8,6 @@ namespace Biblioteca.Dominio
         List<ProdutoTipo> SelecionarTiposProdutos();
         List<Editora> SelecionarEditoras();
         List<Autor> SelecionarAutores();
-
+        int RetornarIdUsuario(string usuario, string senha);
     }
 }

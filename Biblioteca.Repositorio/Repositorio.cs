@@ -17,6 +17,26 @@ namespace Biblioteca.Repositorio
             throw new NotImplementedException();
         }
 
+        public int RetornarIdUsuario(string usuario, string senha)
+        {
+            int retorno = 0;
+            try
+            {
+                string query = string.Format("EXEC PRC_SEL_USUARIO '{0}', '{1}'", usuario, senha);
+                DataTable dados = new Conexao().RetornarDados(query);
+                if (dados.Rows.Count > 0)
+                {
+                    retorno = Convert.ToInt32(dados.Rows[0][0].ToString());
+                }
+            }
+            catch (Exception)
+            {
+                retorno = 0;
+            }
+
+            return retorno;
+        }
+
         public List<Produto> SelecionarProdutos()
         {
             throw new NotImplementedException();

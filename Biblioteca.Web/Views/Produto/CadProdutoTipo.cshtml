@@ -11,22 +11,22 @@
         <table class="table padding-cima-baixo">
             <thead>
                 <tr>
-                    <th>
+                    <th class="text-center">
                         ID
                     </th>
-                    <th>
+                    <th class="text-center">
                         DESCRIÇÃO
                     </th>
-                    <th>
+                    <th class="text-center">
                         PRAZO
                     </th>
-                    <th>
+                    <th class="text-center">
                         MULTA (P/DIA)
                     </th>
-                    <th>
+                    <th class="text-center">
                         ATIVO
                     </th>
-                    <th>
+                    <th class="text-center">
                         Ações
                     </th>
                 </tr>
@@ -35,29 +35,28 @@
                 @foreach (var item in Model)
                 {
                 <tr>
-                    <td>
-                        @Html.DisplayTextFor(p => item.IdProdutoTipo)
+                    <td class="text-center">
+                        @item.IdProdutoTipo
                     </td>
                     <td>
-                        @Html.DisplayTextFor(p => item.Descricao)
+                        @item.Descricao
+                    </td>
+                    <td class="text-center">
+                        @item.Prazo
+                    </td>
+                    <td class="text-center">
+                        @item.VlMulta
+                    </td>
+                    <td class="text-center">
+                        @(item.Ativo ? "SIM" : "NÃO")
                     </td>
                     <td>
-                        @Html.DisplayTextFor(p => item.Prazo)
-                    </td>
-                    <td>
-                        @Html.DisplayTextFor(p => item.VlMulta)
-                    </td>
-                    <td>
-                        @Html.CheckBoxFor(p => item.Ativo)
-                    </td>
-                    <td>
-                        @{
-                            string url = "/Produto/EditarProdutoTipo/" + item.IdProdutoTipo.ToString();
-                        }
-                        <a href=@url><button class="btn btn-sm btn-success" type="button">Editar</button></a>
+                        <a href=@("/Produto/EditarProdutoTipo/" + item.IdProdutoTipo.ToString()) role="button" class="btn btn-success btn-sm">
+                            <i class="glyphicon glyphicon-pencil"></i> Editar
+                        </a>
                     </td>
                 </tr>
-                            }
+                }
             </tbody>
         </table>
     </div>
