@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Biblioteca.Utils;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -42,8 +43,9 @@ namespace Biblioteca.Repositorio
         #endregion
 
         #region Executar query
-        public void ExecutarQuery(string query)
+        public int ExecutarQuery(string query)
         {
+            int linhasAfetadas = 0;
             try
             {
                 using (SqlConnection conexao = new SqlConnection(MontarStringConexao()))
@@ -52,7 +54,7 @@ namespace Biblioteca.Repositorio
                     using (SqlCommand command = new SqlCommand(query, conexao))
                     {
                         command.CommandType = CommandType.Text;
-                        command.ExecuteNonQuery();
+                        linhasAfetadas = command.ExecuteNonQuery();
                     }
                 }
             }
@@ -60,13 +62,14 @@ namespace Biblioteca.Repositorio
             {
                 throw ex;
             }
+            return linhasAfetadas;
         }
 
-        public Task ExecutarQueryAsync(string query)
+        public Task<int> ExecutarQueryAsync(string query)
         {
             return Task.Run(() =>
             {
-                ExecutarQuery(query);
+                return ExecutarQuery(query);
             });
         }
         #endregion
@@ -74,7 +77,14 @@ namespace Biblioteca.Repositorio
         #region Utils
         private string MontarStringConexao()
         {
-            return string.Format("Server={0};Database={1};User Id={2};Password={3};", "192.168.56.135", "BIBLIOTECA", "biblioteca", "biblioteca@123");
+            JsonUtils<BancoDados> json = new JsonUtils<BancoDados>();
+            ArquivoUtils arquivo = new ArquivoUtils();
+
+            string texto = arquivo.LerArquivo("bd.json");
+
+            BancoDados bancoDados = json.JsonToObject(texto);
+
+            return bancoDados.ToString();
         }
         #endregion
 

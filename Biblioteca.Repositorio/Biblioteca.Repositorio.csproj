@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Biblioteca.Dominio\Biblioteca.Dominio.csproj" />
+    <ProjectReference Include="..\Biblioteca.Utils\Biblioteca.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

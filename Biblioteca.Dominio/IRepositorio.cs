@@ -9,5 +9,7 @@ namespace Biblioteca.Dominio
         List<Editora> SelecionarEditoras();
         List<Autor> SelecionarAutores();
         int RetornarIdUsuario(string usuario, string senha);
+        int AtualizarProdutoTipo(ProdutoTipo produtoTipo);
+        ProdutoTipo SelecionarProdutoTipoPorId(int id);
     }
 }

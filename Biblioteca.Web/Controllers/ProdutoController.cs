@@ -1,5 +1,6 @@
 ﻿using Biblioteca.Dominio;
 using Biblioteca.Web.Classes;
+using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -31,6 +32,24 @@ namespace Biblioteca.Web.Controllers
             return View(tiposProduto);
         }
 
+        [HttpPost]
+        public ActionResult EditarProdutoTipo(ProdutoTipoViewModel produtoTipo)
+        {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+            ProdutoTipo produtoAlterar = new ProdutoTipo()
+            {
+                IdProdutoTipo = produtoTipo.IdProdutoTipo,
+                Descricao = produtoTipo.Descricao,
+                Prazo = produtoTipo.Prazo,
+                VlMulta = produtoTipo.VlMulta,
+                Ativo = produtoTipo.Ativo
+            };
+
+            repositorio.AtualizarProdutoTipo(produtoAlterar);
+
+            return RedirectToAction("CadProdutoTipo", "Produto");
+        }
+
         public ActionResult EditarProdutoTipo(int id)
         {
             ActionResult action = ValidarLogin(HttpContext);
@@ -38,8 +57,26 @@ namespace Biblioteca.Web.Controllers
             {
                 return action;
             }
-            ViewData["idProdutoTipo"] = id;
-            return View();
+
+            if (id == 0)
+            {
+                ViewBag.Adicionar = true;
+                return View();
+            }
+
+            ProdutoTipo produtoTipo = new Repositorio.Repositorio().SelecionarProdutoTipoPorId(id);
+            ProdutoTipoViewModel model = new ProdutoTipoViewModel()
+            {
+                IdProdutoTipo = produtoTipo.IdProdutoTipo,
+                Descricao = produtoTipo.Descricao,
+                Prazo = produtoTipo.Prazo,
+                VlMulta = produtoTipo.VlMulta,
+                Ativo = produtoTipo.Ativo
+            };
+
+            ViewBag.Adicionar = false;
+
+            return View(model);
         }
 
         public ActionResult CadEditora()
