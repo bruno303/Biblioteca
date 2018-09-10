@@ -3,10 +3,7 @@ using Biblioteca.Web.Classes;
 using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using X.PagedList;
 
 namespace Biblioteca.Web.Controllers
 {
@@ -24,21 +21,15 @@ namespace Biblioteca.Web.Controllers
         }
 
         #region Tipo de Produto
-        public ActionResult CadProdutoTipo(int? page = 0)
+        public ActionResult CadProdutoTipo()
         {
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
-            if (page == null || page == 0)
-            {
-                page = 1;
-            }
-            IQueryable<ProdutoTipo> tiposProduto = new Repositorio.Repositorio().SelecionarTiposProdutosQuery();
-            var umaPaginaDados = tiposProduto.ToPagedList((int)page, 10);
 
-            ViewBag.Dados = umaPaginaDados;
+            List<ProdutoTipo> tiposProduto = new Repositorio.Repositorio().SelecionarTiposProdutos();
 
             return View(tiposProduto);
         }
@@ -97,20 +88,16 @@ namespace Biblioteca.Web.Controllers
         #endregion
 
         #region Editora
-        public ActionResult CadEditora(int? page)
+        public ActionResult CadEditora()
         {
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
+            List<Editora> editoras = new Repositorio.Repositorio().SelecionarEditoras();
 
-            if (page == null || page == 0) { page = 1; }
-
-            IQueryable<Editora> editoras = new Repositorio.Repositorio().SelecionarEditorasQuery();
-            ViewBag.Dados = editoras.ToPagedList((int)page, 10);
-
-            return View();
+            return View(editoras);
         }
 
         [HttpPost]
@@ -165,7 +152,7 @@ namespace Biblioteca.Web.Controllers
         #endregion
 
         #region Autor
-        public ActionResult CadAutor(int? page)
+        public ActionResult CadAutor()
         {
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
@@ -173,15 +160,9 @@ namespace Biblioteca.Web.Controllers
                 return action;
             }
 
-            if (page == null || page == 0)
-            {
-                page = 1;
-            }
+            List<Autor> autores = new Repositorio.Repositorio().SelecionarAutores();
 
-            IQueryable<Autor> autores = new Repositorio.Repositorio().SelecionarAutoresQuery();
-            ViewBag.Dados = autores.ToPagedList((int)page, 10);
-
-            return View();
+            return View(autores);
         }
 
         public ActionResult EditarAutor(int id)
