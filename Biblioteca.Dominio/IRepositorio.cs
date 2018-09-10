@@ -5,11 +5,30 @@ namespace Biblioteca.Dominio
     public interface IRepositorio
     {
         List<Produto> SelecionarProdutos();
+
+        #region Tipo de Produto
         List<ProdutoTipo> SelecionarTiposProdutos();
-        List<Editora> SelecionarEditoras();
-        List<Autor> SelecionarAutores();
-        int RetornarIdUsuario(string usuario, string senha);
-        int AtualizarProdutoTipo(ProdutoTipo produtoTipo);
+        System.Linq.IQueryable<ProdutoTipo> SelecionarTiposProdutosQuery();
         ProdutoTipo SelecionarProdutoTipoPorId(int id);
+        int AtualizarProdutoTipo(ProdutoTipo produtoTipo);
+        #endregion
+
+        #region Editora
+        List<Editora> SelecionarEditoras();
+        System.Linq.IQueryable<Editora> SelecionarEditorasQuery();
+        Editora SelecionarEditoraPorId(int id);
+        int AtualizarEditora(Editora editora);
+        #endregion
+
+        #region Autor
+        List<Autor> SelecionarAutores();
+        System.Linq.IQueryable<Autor> SelecionarAutoresQuery();
+        Autor SelecionarAutorPorId(int id);
+        int AtualizarAutor(Autor autor);
+        #endregion
+
+        #region Usuário
+        int RetornarIdUsuario(string usuario, string senha);
+        #endregion
     }
 }

@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Biblioteca.Dominio;
 
 namespace Biblioteca.Repositorio
 {
     public class Repositorio : IRepositorio
     {
-        public List<Autor> SelecionarAutores()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Editora> SelecionarEditoras()
-        {
-            throw new NotImplementedException();
-        }
-
         public int RetornarIdUsuario(string usuario, string senha)
         {
             int retorno = 0;
@@ -42,6 +33,12 @@ namespace Biblioteca.Repositorio
             throw new NotImplementedException();
         }
 
+        #region Tipo de Produto
+        public IQueryable<ProdutoTipo> SelecionarTiposProdutosQuery()
+        {
+            return SelecionarTiposProdutos().AsQueryable();
+        }
+
         public List<ProdutoTipo> SelecionarTiposProdutos()
         {
             List<ProdutoTipo> retorno = new List<ProdutoTipo>();
@@ -49,7 +46,7 @@ namespace Biblioteca.Repositorio
 
             try
             {
-                string query = "SELECT ID_PRODUTO_TIPO, DESCRICAO, PRAZO, VL_MULTA, ATIVO FROM PRODUTO_TIPO WITH(NOLOCK)";
+                string query = "EXEC PRC_SEL_PRODUTOTIPO 0";
                 dados = new Conexao().RetornarDados(query);
 
                 if (dados.Rows.Count > 0)
@@ -116,5 +113,172 @@ namespace Biblioteca.Repositorio
 
             return retorno;
         }
+        #endregion
+
+        #region Editora
+        public List<Editora> SelecionarEditoras()
+        {
+            List<Editora> retorno = new List<Editora>();
+            DataTable dados;
+            Conexao conexao = new Conexao();
+
+            try
+            {
+                string query = "EXEC PRC_SEL_EDITORA 0";
+                dados = conexao.RetornarDados(query);
+                if (dados.Rows.Count > 0)
+                {
+                    foreach (DataRow linha in dados.Rows)
+                    {
+                        retorno.Add(new Editora()
+                        {
+                            IdEditora = Convert.ToInt32(linha[0].ToString()),
+                            Nome = linha[1].ToString()
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                retorno = null;
+            }
+
+            return retorno;
+        }
+
+        public IQueryable<Editora> SelecionarEditorasQuery()
+        {
+            return SelecionarEditoras()?.AsQueryable();
+        }
+
+        public Editora SelecionarEditoraPorId(int id)
+        {
+            Editora retorno = new Editora();
+            DataTable dados = new DataTable();
+            Conexao conexao = new Conexao();
+
+            try
+            {
+                string query = string.Format("EXEC PRC_SEL_EDITORA {0}", id);
+                dados = conexao.RetornarDados(query);
+                if (dados.Rows.Count > 0)
+                {
+                    retorno.IdEditora = Convert.ToInt32(dados.Rows[0][0].ToString());
+                    retorno.Nome = dados.Rows[0][1].ToString();
+                }
+            }
+            catch (Exception)
+            {
+                retorno = null;
+            }
+
+            return retorno;
+        }
+
+        public int AtualizarEditora(Editora editora)
+        {
+            int retorno = 0;
+            Conexao conexao = new Conexao();
+
+            try
+            {
+                if (editora != null)
+                {
+                    string query = string.Format("EXEC PRC_IU_EDITORA {0}, '{1}'", editora.IdEditora, editora.Nome);
+                    retorno = conexao.ExecutarQuery(query);
+                }
+            }
+            catch (Exception)
+            {
+                retorno = 0;
+            }
+
+            return retorno;
+        }
+        #endregion
+
+        #region Autor
+        public List<Autor> SelecionarAutores()
+        {
+            List<Autor> retorno = new List<Autor>();
+            Conexao conexao = new Conexao();
+            DataTable dados;
+
+            try
+            {
+                string query = "EXEC PRC_SEL_AUTOR 0";
+                dados = conexao.RetornarDados(query);
+                if (dados.Rows.Count > 0)
+                {
+                    foreach (DataRow linha in dados.Rows)
+                    {
+                        retorno.Add(new Autor()
+                        {
+                            IdAutor = Convert.ToInt32(linha[0].ToString()),
+                            Nome = linha[1].ToString(),
+                            DtNascimento = Convert.ToDateTime(linha[2].ToString())
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                retorno = null;
+            }
+
+            return retorno;
+        }
+
+        public IQueryable<Autor> SelecionarAutoresQuery()
+        {
+            return SelecionarAutores().AsQueryable();
+        }
+
+        public Autor SelecionarAutorPorId(int id)
+        {
+            Autor retorno = new Autor();
+            Conexao conexao = new Conexao();
+            DataTable dados;
+
+            try
+            {
+                string query = string.Format("EXEC PRC_SEL_AUTOR {0}", id);
+                dados = conexao.RetornarDados(query);
+                if (dados.Rows.Count > 0)
+                {
+                    retorno.IdAutor = Convert.ToInt32(dados.Rows[0][0].ToString());
+                    retorno.Nome = dados.Rows[0][1].ToString();
+                    retorno.DtNascimento = Convert.ToDateTime(dados.Rows[0][2].ToString());
+                }
+            }
+            catch (Exception)
+            {
+                retorno = null;
+            }
+
+            return retorno;
+        }
+
+        public int AtualizarAutor(Autor autor)
+        {
+            int retorno = 0;
+            Conexao conexao = new Conexao();
+
+            try
+            {
+                if (autor != null)
+                {
+                    string query = string.Format("EXEC PRC_IU_AUTOR {0}, '{1}', '{2}'", autor.IdAutor, autor.Nome, autor.DtNascimento.ToString("yyyy-MM-dd hh:mm:ss"));
+                    retorno = conexao.ExecutarQuery(query);
+                }
+            }
+            catch (Exception)
+            {
+                retorno = 0;
+            }
+
+            return retorno;
+        }
+        #endregion
     }
 }

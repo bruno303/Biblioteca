@@ -1,0 +1,34 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Bruno Oliveira
+-- Create date: 09/09/2018
+-- Description:	Seleciona os dados de autor.
+-- =============================================
+CREATE PROCEDURE dbo.PRC_IU_AUTOR
+	@I_ID_AUTOR INT,
+	@I_NOME VARCHAR(120),
+	@I_DT_NASCIMENTO DATETIME
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	IF EXISTS (SELECT TOP(1) ID_AUTOR FROM AUTOR WITH(NOLOCK) WHERE ID_AUTOR = @I_ID_AUTOR) BEGIN
+
+		UPDATE AUTOR
+		SET NOME = UPPER(@I_NOME),
+			DT_NASCIMENTO = @I_DT_NASCIMENTO
+		WHERE ID_AUTOR = @I_ID_AUTOR
+
+	END
+	ELSE BEGIN
+
+		INSERT INTO AUTOR (NOME, DT_NASCIMENTO) VALUES (UPPER(@I_NOME), @I_DT_NASCIMENTO)
+
+	END
+
+	SET NOCOUNT OFF;
+END
+GO
