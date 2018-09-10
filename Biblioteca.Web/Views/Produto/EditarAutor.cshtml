@@ -1,0 +1,42 @@
+﻿@model AutorViewModel
+@{
+    ViewData["Title"] = "Edição - Autor";
+}
+
+<br />
+<div class="row">
+    <div class="col-md-3"></div>
+
+    <div class="col-md-6">
+        <a role="button" class="btn btn-outline-primary btn-block" href="/Produto/CadAutor/">Voltar</a>
+        <br />
+        <form method="post" action="/Produto/EditarAutor/" role="form">
+            <div class="form-group" hidden>
+                @Html.LabelFor(p => p.IdAutor)
+                @Html.TextBoxFor(p => p.IdAutor, new { @class = "form-control" })
+                <br />
+                @Html.ValidationMessageFor(p => p.IdAutor, "", new { @class = "text-danger" }, "")
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(p => p.Nome)
+                @Html.TextBoxFor(p => p.Nome, new { @class = "form-control" })
+                <br />
+                @Html.ValidationMessageFor(p => p.Nome, "", new { @class = "text-danger" }, "")
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(p => p.DtNascimento)
+                @Html.TextBoxFor(p => p.DtNascimento, new { @class = "form-control" })
+                <br />
+                @Html.ValidationMessageFor(p => p.DtNascimento, "", new { @class = "text-danger" }, "")
+            </div>
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <br />
+            <input type="submit" value="@(ViewBag.Adicionar ? "Adicionar" : "Alterar")" class="btn btn-primary" />
+        </form>
+    </div>
+
+    <div class="col-md-3"></div>
+</div>

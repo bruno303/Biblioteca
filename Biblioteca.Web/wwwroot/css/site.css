@@ -1,7 +1,7 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
 for details on configuring this project to bundle and minify static web assets. */
 body {
-    padding-top: 50px;
+    padding-top: 0px;
     padding-bottom: 20px;
 }
 
@@ -34,4 +34,15 @@ body {
     .carousel-caption {
         display: none;
     }
+}
+
+.padding-cima-baixo {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.tela-inicio {
+    background-image: url(../img/livros2.gif);
 }

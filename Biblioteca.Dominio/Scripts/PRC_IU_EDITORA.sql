@@ -1,0 +1,32 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Bruno Oliveira
+-- Create date: 09/09/2018
+-- Description:	Altera ou insere dados de editoras
+-- =============================================
+CREATE PROCEDURE dbo.PRC_IU_EDITORA
+	@I_ID_EDITORA INT,
+	@I_NOME	VARCHAR(120)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	IF EXISTS (SELECT TOP(1) ID_EDITORA FROM EDITORA WITH(NOLOCK) WHERE ID_EDITORA = @I_ID_EDITORA) BEGIN
+
+		UPDATE EDITORA
+		SET NOME = UPPER(@I_NOME)
+		WHERE ID_EDITORA = @I_ID_EDITORA
+
+	END
+	ELSE BEGIN
+
+		INSERT INTO EDITORA (NOME) VALUES (UPPER(@I_NOME))
+
+	END
+
+	SET NOCOUNT OFF;
+END
+GO

@@ -5,8 +5,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\bootstrap4.0.0\**" />
+    <Content Remove="wwwroot\lib\bootstrap4.0.0\**" />
+    <EmbeddedResource Remove="wwwroot\lib\bootstrap4.0.0\**" />
+    <None Remove="wwwroot\lib\bootstrap4.0.0\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.3" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="7.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Biblioteca.Dominio\Biblioteca.Dominio.csproj" />
+    <ProjectReference Include="..\Biblioteca.Repositorio\Biblioteca.Repositorio.csproj" />
   </ItemGroup>
 
 </Project>

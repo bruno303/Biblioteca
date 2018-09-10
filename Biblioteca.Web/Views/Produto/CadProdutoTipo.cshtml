@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewData["Title"] = "Cadastro de Tipos de Produto";
+}
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+
+<h2 class="padding-cima-baixo">@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <a class="btn btn-secondary padding-cima-baixo" role="button" href="/Produto/EditarProdutoTipo/0">Adicionar</a>
+        <table class="table padding-cima-baixo">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        ID
+                    </th>
+                    <th class="text-center">
+                        DESCRIÇÃO
+                    </th>
+                    <th class="text-center">
+                        PRAZO
+                    </th>
+                    <th class="text-center">
+                        MULTA (P/DIA)
+                    </th>
+                    <th class="text-center">
+                        ATIVO
+                    </th>
+                    <th class="text-center">
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.Dados)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @item.IdProdutoTipo
+                        </td>
+                        <td>
+                            @item.Descricao
+                        </td>
+                        <td class="text-center">
+                            @item.Prazo
+                        </td>
+                        <td class="text-center">
+                            @item.VlMulta
+                        </td>
+                        <td class="text-center">
+                            @(item.Ativo ? "SIM" : "NÃO")
+                        </td>
+                        <td>
+                            <a href=@("/Produto/EditarProdutoTipo/" + item.IdProdutoTipo.ToString()) role="button" class="btn btn-success btn-sm">
+                                <i class="glyphicon glyphicon-pencil"></i> Editar
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @Html.PagedListPager((IPagedList)ViewBag.Dados, page => Url.Action("CadProdutoTipo", new { page }))
+    </div>
+</div>
