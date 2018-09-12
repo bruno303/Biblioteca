@@ -27,7 +27,7 @@
 
             <div class="form-group">
                 @Html.LabelFor(p => p.DtNascimento)
-                @Html.TextBoxFor(p => p.DtNascimento, new { @class = "form-control" })
+                @Html.EditorFor(p => p.DtNascimento, new { htmlAttributes = new { @class = "form-control" } })
                 <br />
                 @Html.ValidationMessageFor(p => p.DtNascimento, "", new { @class = "text-danger" }, "")
             </div>

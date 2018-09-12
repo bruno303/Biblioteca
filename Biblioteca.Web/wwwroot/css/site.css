@@ -46,3 +46,10 @@ body {
 .tela-inicio {
     background-image: url(../img/livros2.gif);
 }
+
+/*footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    z-index: 1;
+}*/

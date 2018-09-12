@@ -4,7 +4,12 @@ namespace Biblioteca.Dominio
 {
     public interface IRepositorio
     {
-        List<Produto> SelecionarProdutos();
+        #region Produto
+        List<ProdutoExibicao> SelecionarProdutosExibicao();
+        System.Linq.IQueryable<ProdutoExibicao> SelecionarProdutosExibicaoQuery();
+        Produto SelecionarProdutoPorId(int id);
+        int AtualizarProduto(Produto produto);
+        #endregion
 
         #region Tipo de Produto
         List<ProdutoTipo> SelecionarTiposProdutos();

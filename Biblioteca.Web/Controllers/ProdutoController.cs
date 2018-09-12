@@ -9,6 +9,7 @@ namespace Biblioteca.Web.Controllers
 {
     public class ProdutoController : Controller
     {
+        #region Produto
         public ActionResult CadProduto()
         {
             ActionResult action = ValidarLogin(HttpContext);
@@ -16,9 +17,68 @@ namespace Biblioteca.Web.Controllers
             {
                 return action;
             }
-            List<Produto> produtos = new Repositorio.Repositorio().SelecionarProdutos();
+            List<ProdutoExibicao> produtos = new Repositorio.Repositorio().SelecionarProdutos();
+
+
             return View(produtos);
         }
+
+        public ActionResult EditarProduto(int id)
+        {
+            ActionResult action = ValidarLogin(HttpContext);
+            if (action != null)
+            {
+                return action;
+            }
+
+            Produto produto = new Repositorio.Repositorio().SelecionarProdutoPorId(id);
+            ProdutoViewModel produtoViewModel = new ProdutoViewModel()
+            {
+                IdProdutoTipo = produto.IdProdutoTipo,
+                Descricao = produto.Descricao,
+                IdAutor = produto.IdAutor,
+                IdProduto = produto.IdProduto,
+                IdEditora = produto.IdEditora,
+                Quantidade = produto.Quantidade,
+                Ativo = produto.Ativo
+            };
+
+            ViewBag.Adicionar = id == 0;
+
+            return View(produtoViewModel);
+        }
+
+        [HttpPost]
+        public ActionResult EditarProduto(ProdutoViewModel produtoViewModel)
+        {
+            ActionResult action = ValidarLogin(HttpContext);
+            if (action != null)
+            {
+                return action;
+            }
+
+            if (produtoViewModel != null)
+            {
+                IRepositorio repositorio = new Repositorio.Repositorio();
+
+                Produto produto = new Produto()
+                {
+                    IdProduto = produtoViewModel.IdProduto,
+                    Descricao = produtoViewModel.Descricao,
+                    IdProdutoTipo = produtoViewModel.IdProdutoTipo,
+                    IdAutor = produtoViewModel.IdAutor,
+                    IdEditora = produtoViewModel.IdEditora,
+                    Quantidade = produtoViewModel.Quantidade,
+                    Ativo = produtoViewModel.Ativo
+                };
+
+                repositorio.AtualizarProduto(produto);
+
+            }
+
+            return RedirectToAction("CadProduto", "Produto");
+        }
+        #endregion
 
         #region Tipo de Produto
         public ActionResult CadProdutoTipo()
