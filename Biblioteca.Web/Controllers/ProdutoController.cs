@@ -3,6 +3,7 @@ using Biblioteca.Web.Classes;
 using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace Biblioteca.Web.Controllers
@@ -12,38 +13,63 @@ namespace Biblioteca.Web.Controllers
         #region Produto
         public ActionResult CadProduto()
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
-            List<ProdutoExibicao> produtos = new Repositorio.Repositorio().SelecionarProdutos();
+            List<Produto> produtos = repositorio.SelecionarProdutos();
+            List<ProdutoExibicaoViewModel> produtosExibicao = new List<ProdutoExibicaoViewModel>();
+            foreach (Produto prod in produtos)
+            {
+                produtosExibicao.Add(new ProdutoExibicaoViewModel()
+                {
+                    IdProduto = prod.IdProduto,
+                    Descricao = prod.Descricao,
+                    Ativo = prod.Ativo,
+                    Quantidade = prod.Quantidade,
+                    Autor = repositorio.SelecionarNomeAutor(prod.IdAutor),
+                    Editora = repositorio.SelecionarNomeEditora(prod.IdEditora),
+                    ProdutoTipo = repositorio.SelecionarDescricaoProdutoTipo(prod.IdProdutoTipo)
+                });
+            }
 
 
-            return View(produtos);
+            return View(produtosExibicao);
         }
 
         public ActionResult EditarProduto(int id)
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+            ProdutoViewModel produtoViewModel = new ProdutoViewModel();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
 
-            Produto produto = new Repositorio.Repositorio().SelecionarProdutoPorId(id);
-            ProdutoViewModel produtoViewModel = new ProdutoViewModel()
+            if (id == 0)
             {
-                IdProdutoTipo = produto.IdProdutoTipo,
-                Descricao = produto.Descricao,
-                IdAutor = produto.IdAutor,
-                IdProduto = produto.IdProduto,
-                IdEditora = produto.IdEditora,
-                Quantidade = produto.Quantidade,
-                Ativo = produto.Ativo
-            };
+                ViewBag.Adicionar = true;
+                return View(produtoViewModel);
+            }
+            else
+            {
+                ViewBag.Adicionar = false;
+            }
 
-            ViewBag.Adicionar = id == 0;
+            Produto produto = repositorio.SelecionarProdutoPorId(id);
+
+            produtoViewModel.IdProdutoTipo = produto.IdProdutoTipo;
+            produtoViewModel.Descricao = produto.Descricao;
+            produtoViewModel.IdAutor = produto.IdAutor;
+            produtoViewModel.IdProduto = produto.IdProduto;
+            produtoViewModel.IdEditora = produto.IdEditora;
+            produtoViewModel.Quantidade = produto.Quantidade;
+            produtoViewModel.Ativo = produto.Ativo;
 
             return View(produtoViewModel);
         }
@@ -57,13 +83,13 @@ namespace Biblioteca.Web.Controllers
                 return action;
             }
 
-            if (produtoViewModel != null)
+            if (produtoViewModel != null && ModelState.IsValid)
             {
                 IRepositorio repositorio = new Repositorio.Repositorio();
 
                 Produto produto = new Produto()
                 {
-                    IdProduto = produtoViewModel.IdProduto,
+                    IdProduto = produtoViewModel.IdProduto ?? 0,
                     Descricao = produtoViewModel.Descricao,
                     IdProdutoTipo = produtoViewModel.IdProdutoTipo,
                     IdAutor = produtoViewModel.IdAutor,
@@ -73,7 +99,6 @@ namespace Biblioteca.Web.Controllers
                 };
 
                 repositorio.AtualizarProduto(produto);
-
             }
 
             return RedirectToAction("CadProduto", "Produto");
@@ -83,13 +108,15 @@ namespace Biblioteca.Web.Controllers
         #region Tipo de Produto
         public ActionResult CadProdutoTipo()
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
 
-            List<ProdutoTipo> tiposProduto = new Repositorio.Repositorio().SelecionarTiposProdutos();
+            List<ProdutoTipo> tiposProduto = repositorio.SelecionarTiposProdutos();
 
             return View(tiposProduto);
         }
@@ -102,23 +129,30 @@ namespace Biblioteca.Web.Controllers
             {
                 return action;
             }
-            IRepositorio repositorio = new Repositorio.Repositorio();
-            ProdutoTipo produtoAlterar = new ProdutoTipo()
-            {
-                IdProdutoTipo = produtoTipo.IdProdutoTipo,
-                Descricao = produtoTipo.Descricao,
-                Prazo = produtoTipo.Prazo,
-                VlMulta = produtoTipo.VlMulta,
-                Ativo = produtoTipo.Ativo
-            };
 
-            repositorio.AtualizarProdutoTipo(produtoAlterar);
+            if (produtoTipo != null && ModelState.IsValid)
+            {
+                IRepositorio repositorio = new Repositorio.Repositorio();
+
+                ProdutoTipo produtoAlterar = new ProdutoTipo()
+                {
+                    IdProdutoTipo = produtoTipo.IdProdutoTipo ?? 0,
+                    Descricao = produtoTipo.Descricao,
+                    Prazo = produtoTipo.Prazo,
+                    VlMulta = produtoTipo.VlMulta,
+                    Ativo = produtoTipo.Ativo
+                };
+
+                repositorio.AtualizarProdutoTipo(produtoAlterar);
+            }
 
             return RedirectToAction("CadProdutoTipo", "Produto");
         }
 
         public ActionResult EditarProdutoTipo(int id)
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
@@ -131,7 +165,7 @@ namespace Biblioteca.Web.Controllers
                 return View();
             }
 
-            ProdutoTipo produtoTipo = new Repositorio.Repositorio().SelecionarProdutoTipoPorId(id);
+            ProdutoTipo produtoTipo = repositorio.SelecionarProdutoTipoPorId(id);
             ProdutoTipoViewModel model = new ProdutoTipoViewModel()
             {
                 IdProdutoTipo = produtoTipo.IdProdutoTipo,
@@ -150,12 +184,14 @@ namespace Biblioteca.Web.Controllers
         #region Editora
         public ActionResult CadEditora()
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
-            List<Editora> editoras = new Repositorio.Repositorio().SelecionarEditoras();
+            List<Editora> editoras = repositorio.SelecionarEditoras();
 
             return View(editoras);
         }
@@ -168,13 +204,13 @@ namespace Biblioteca.Web.Controllers
             {
                 return action;
             }
-            if (editoraViewModel != null )
+            if (editoraViewModel != null && ModelState.IsValid)
             {
                 IRepositorio repositorio = new Repositorio.Repositorio();
 
                 Editora editora = new Editora()
                 {
-                    IdEditora = editoraViewModel.IdEditora,
+                    IdEditora = editoraViewModel.IdEditora ?? 0,
                     Nome = editoraViewModel.Nome
                 };
 
@@ -186,6 +222,8 @@ namespace Biblioteca.Web.Controllers
 
         public ActionResult EditarEditora(int id)
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
@@ -198,7 +236,7 @@ namespace Biblioteca.Web.Controllers
                 return View();
             }
 
-            Editora editora = new Repositorio.Repositorio().SelecionarEditoraPorId(id);
+            Editora editora = repositorio.SelecionarEditoraPorId(id);
             EditoraViewModel model = new EditoraViewModel()
             {
                 IdEditora = editora.IdEditora,
@@ -214,19 +252,23 @@ namespace Biblioteca.Web.Controllers
         #region Autor
         public ActionResult CadAutor()
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
 
-            List<Autor> autores = new Repositorio.Repositorio().SelecionarAutores();
+            List<Autor> autores = repositorio.SelecionarAutores();
 
             return View(autores);
         }
 
         public ActionResult EditarAutor(int id)
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
@@ -239,7 +281,7 @@ namespace Biblioteca.Web.Controllers
                 return View();
             }
 
-            Autor autor = new Repositorio.Repositorio().SelecionarAutorPorId(id);
+            Autor autor = repositorio.SelecionarAutorPorId(id);
             AutorViewModel model = new AutorViewModel()
             {
                 IdAutor = autor.IdAutor,
@@ -260,13 +302,13 @@ namespace Biblioteca.Web.Controllers
             {
                 return action;
             }
-            if (autorViewModel != null)
+            if (autorViewModel != null && ModelState.IsValid)
             {
                 IRepositorio repositorio = new Repositorio.Repositorio();
 
                 Autor autor = new Autor()
                 {
-                    IdAutor = autorViewModel.IdAutor,
+                    IdAutor = autorViewModel.IdAutor ?? 0,
                     Nome = autorViewModel.Nome,
                     DtNascimento = autorViewModel.DtNascimento
                 };

@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Biblioteca.Web.Models
 {
     public class ProdutoViewModel
     {
-        [Required(ErrorMessage = "É necessário informar o ID.")]
         [Display(Name = "ID")]
-        public int IdProduto { get; set; }
+        [ReadOnly(true)]
+        public int? IdProduto { get; set; }
 
         [Required(ErrorMessage = "Descrição obrigatória.")]
         [Display(Name = "Descrição")]

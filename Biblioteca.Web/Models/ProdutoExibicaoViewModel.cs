@@ -1,6 +1,6 @@
-﻿namespace Biblioteca.Dominio
+﻿namespace Biblioteca.Web.Models
 {
-    public class ProdutoExibicao
+    public class ProdutoExibicaoViewModel
     {
         public int IdProduto { get; set; }
         public string Descricao { get; set; }

@@ -1,13 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Biblioteca.Web.Models
 {
     public class AutorViewModel
     {
-        [Required(ErrorMessage = "É necessário informar o ID.")]
         [Display(Name = "ID")]
-        public int IdAutor { get; set; }
+        [ReadOnly(true)]
+        public int? IdAutor { get; set; }
 
         [Required(ErrorMessage = "É necessário informar o nome do autor.")]
         [Display(Name = "Nome")]

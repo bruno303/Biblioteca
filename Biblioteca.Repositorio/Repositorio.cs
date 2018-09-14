@@ -33,27 +33,27 @@ namespace Biblioteca.Repositorio
         /// Consulta todos os produtos cadastrados.
         /// </summary>
         /// <returns>Lista com todos os produtos.</returns>
-        public List<ProdutoExibicao> SelecionarProdutosExibicao()
+        public List<Produto> SelecionarProdutos()
         {
-            List<ProdutoExibicao> retorno = new List<ProdutoExibicao>();
+            List<Produto> retorno = new List<Produto>();
             Conexao conexao = new Conexao();
             DataTable dados = null;
 
             try
             {
-                string query = " EXEC PRC_SEL_PRODUTO ";
+                string query = " EXEC PRC_SEL_PRODUTO 0 ";
                 dados = conexao.RetornarDados(query);
                 if (dados.Rows.Count > 0)
                 {
                     foreach (DataRow linha in dados.Rows)
                     {
-                        retorno.Add(new ProdutoExibicao()
+                        retorno.Add(new Produto()
                         {
                             IdProduto = Convert.ToInt32(linha[0].ToString()),
                             Descricao = linha[1].ToString(),
-                            ProdutoTipo = linha[2].ToString(),
-                            Autor = linha[3].ToString(),
-                            Editora = linha[4].ToString(),
+                            IdProdutoTipo = Convert.ToInt32(linha[2].ToString()),
+                            IdAutor = Convert.ToInt32(linha[3].ToString()),
+                            IdEditora = Convert.ToInt32(linha[4].ToString()),
                             Quantidade = Convert.ToInt32(linha[5].ToString()),
                             Ativo = Convert.ToBoolean(linha[6].ToString())
                         });
@@ -66,15 +66,6 @@ namespace Biblioteca.Repositorio
             }
 
             return retorno;
-        }
-
-        /// <summary>
-        /// Retorna um IQueryable com todos os produtos cadastrados.
-        /// </summary>
-        /// <returns>IQueryable com produtos cadastrados.</returns>
-        public IQueryable<ProdutoExibicao> SelecionarProdutosExibicaoQuery()
-        {
-            return SelecionarProdutos().AsQueryable();
         }
 
         /// <summary>
@@ -115,7 +106,7 @@ namespace Biblioteca.Repositorio
 
             try
             {
-                string query = string.Format(" EXEC PRC_SEL_PRODUTO_ID {0}", id);
+                string query = string.Format(" EXEC PRC_SEL_PRODUTO {0}", id);
                 dados = conexao.RetornarDados(query);
                 if (dados.Rows.Count > 0)
                 {
@@ -138,15 +129,6 @@ namespace Biblioteca.Repositorio
         #endregion
 
         #region Tipo de Produto
-        /// <summary>
-        /// Prepara IQueryable com os tipos de produtos cadastrados.
-        /// </summary>
-        /// <returns>Retorna IQueryable com os tipos de produtos cadastrados.</returns>
-        public IQueryable<ProdutoTipo> SelecionarTiposProdutosQuery()
-        {
-            return SelecionarTiposProdutos().AsQueryable();
-        }
-
         /// <summary>
         /// Seleciona todos os tipos de produto cadastrados.
         /// </summary>
@@ -235,6 +217,17 @@ namespace Biblioteca.Repositorio
 
             return retorno;
         }
+
+        /// <summary>
+        /// Seleciona a descrição do tipo de produto.
+        /// </summary>
+        /// <param name="id">Id do tipo de produto.</param>
+        /// <returns>Retorna a descrição do tipo de produto.</returns>
+        public string SelecionarDescricaoProdutoTipo(int id)
+        {
+            ProdutoTipo produtoTipo = SelecionarProdutoTipoPorId(id);
+            return produtoTipo.Descricao;
+        }
         #endregion
 
         #region Editora
@@ -270,15 +263,6 @@ namespace Biblioteca.Repositorio
             }
 
             return retorno;
-        }
-
-        /// <summary>
-        /// Prepara IQueryable com as editoras cadastradas.
-        /// </summary>
-        /// <returns>Retorna IQueryable com as editoras cadastradas.</returns>
-        public IQueryable<Editora> SelecionarEditorasQuery()
-        {
-            return SelecionarEditoras()?.AsQueryable();
         }
 
         /// <summary>
@@ -335,6 +319,17 @@ namespace Biblioteca.Repositorio
 
             return retorno;
         }
+
+        /// <summary>
+        /// Consulta o nome da editora.
+        /// </summary>
+        /// <param name="id">Id da editora.</param>
+        /// <returns>Retorna o nome da editora.</returns>
+        public string SelecionarNomeEditora(int id)
+        {
+            Editora editora = SelecionarEditoraPorId(id);
+            return editora.Nome;
+        }
         #endregion
 
         #region Autor
@@ -371,15 +366,6 @@ namespace Biblioteca.Repositorio
             }
 
             return retorno;
-        }
-
-        /// <summary>
-        /// Prepara um IQueryable com todos os autores cadastrados.
-        /// </summary>
-        /// <returns>Retorna um IQueryable com os autores cadastrados.</returns>
-        public IQueryable<Autor> SelecionarAutoresQuery()
-        {
-            return SelecionarAutores().AsQueryable();
         }
 
         /// <summary>
@@ -436,6 +422,17 @@ namespace Biblioteca.Repositorio
             }
 
             return retorno;
+        }
+
+        /// <summary>
+        /// Consulta o nome do autor.
+        /// </summary>
+        /// <param name="id">Id do autor.</param>
+        /// <returns>Retorna o nome do autor</returns>
+        public string SelecionarNomeAutor(int id)
+        {
+            Autor autor = SelecionarAutorPorId(id);
+            return autor.Nome;
         }
         #endregion
     }
