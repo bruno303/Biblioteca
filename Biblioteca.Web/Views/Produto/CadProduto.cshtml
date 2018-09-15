@@ -30,12 +30,6 @@
                     <th class="text-center">
                         Editora
                     </th>
-                    <th class="text-center">
-                        Quantidade
-                    </th>
-                    <th class="text-center">
-                        Ativo
-                    </th>
                     <th>
                         Ações
                     </th>
@@ -59,12 +53,6 @@
                     </td>
                     <td>
                         @item.Editora
-                    </td>
-                    <td class="text-center">
-                        @item.Quantidade
-                    </td>
-                    <td class="text-center">
-                        @(item.Ativo ? "SIM" : "NAO")
                     </td>
                     <td>
                         <a href=@("/Produto/EditarProduto/" + item.IdProduto.ToString()) role="button" class="btn btn-success btn-sm">
