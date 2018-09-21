@@ -11,6 +11,7 @@
         <a role="button" class="btn btn-outline-primary btn-block" href="/Produto/CadAutor/">Voltar</a>
         <br />
         <form method="post" action="/Produto/EditarAutor/" role="form">
+            @Html.AntiForgeryToken()
             <div class="form-group" hidden>
                 @Html.LabelFor(p => p.IdAutor)
                 @Html.TextBoxFor(p => p.IdAutor, new { @class = "form-control" })

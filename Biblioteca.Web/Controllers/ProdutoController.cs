@@ -75,6 +75,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditarProduto(ProdutoViewModel produtoViewModel)
         {
             ActionResult action = ValidarLogin(HttpContext);
@@ -122,6 +123,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditarProdutoTipo(ProdutoTipoViewModel produtoTipo)
         {
             ActionResult action = ValidarLogin(HttpContext);
@@ -197,6 +199,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditarEditora(EditoraViewModel editoraViewModel)
         {
             ActionResult action = ValidarLogin(HttpContext);
@@ -295,6 +298,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditarAutor(AutorViewModel autorViewModel)
         {
             ActionResult action = ValidarLogin(HttpContext);
