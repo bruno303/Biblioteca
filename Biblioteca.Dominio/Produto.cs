@@ -9,5 +9,7 @@
         public int IdEditora { get; set; }
         public int Quantidade { get; set; }
         public bool Ativo { get; set; }
+        public string Isbn { get; set; }
+        public int AnoPublicacao { get; set; }
     }
 }

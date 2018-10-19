@@ -1,10 +1,11 @@
 ﻿using Biblioteca.Dominio;
+using Biblioteca.Utils;
 using Biblioteca.Web.Classes;
 using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Biblioteca.Web.Controllers
 {
@@ -32,7 +33,9 @@ namespace Biblioteca.Web.Controllers
                     Quantidade = prod.Quantidade,
                     Autor = repositorio.SelecionarNomeAutor(prod.IdAutor),
                     Editora = repositorio.SelecionarNomeEditora(prod.IdEditora),
-                    ProdutoTipo = repositorio.SelecionarDescricaoProdutoTipo(prod.IdProdutoTipo)
+                    ProdutoTipo = repositorio.SelecionarDescricaoProdutoTipo(prod.IdProdutoTipo),
+                    AnoPublicacao = prod.AnoPublicacao,
+                    Isbn = prod.Isbn
                 });
             }
 
@@ -63,13 +66,7 @@ namespace Biblioteca.Web.Controllers
 
             Produto produto = repositorio.SelecionarProdutoPorId(id);
 
-            produtoViewModel.IdProdutoTipo = produto.IdProdutoTipo;
-            produtoViewModel.Descricao = produto.Descricao;
-            produtoViewModel.IdAutor = produto.IdAutor;
-            produtoViewModel.IdProduto = produto.IdProduto;
-            produtoViewModel.IdEditora = produto.IdEditora;
-            produtoViewModel.Quantidade = produto.Quantidade;
-            produtoViewModel.Ativo = produto.Ativo;
+            MapperUtils.Mapear(produto, produtoViewModel);
 
             return View(produtoViewModel);
         }
@@ -88,38 +85,54 @@ namespace Biblioteca.Web.Controllers
             {
                 IRepositorio repositorio = new Repositorio.Repositorio();
 
-                Produto produto = new Produto()
-                {
-                    IdProduto = produtoViewModel.IdProduto ?? 0,
-                    Descricao = produtoViewModel.Descricao,
-                    IdProdutoTipo = produtoViewModel.IdProdutoTipo,
-                    IdAutor = produtoViewModel.IdAutor,
-                    IdEditora = produtoViewModel.IdEditora,
-                    Quantidade = produtoViewModel.Quantidade,
-                    Ativo = produtoViewModel.Ativo
-                };
+                Produto produto = new Produto();
+                MapperUtils.Mapear(produtoViewModel, produto);
 
                 repositorio.AtualizarProduto(produto);
             }
-
+            else
+            {
+                ModelState.AddModelError("erro_binding", "Erro nos parâmetros informados");
+                return RedirectToAction("EditarProduto", "Produto");
+            }
             return RedirectToAction("CadProduto", "Produto");
+        }
+
+        public JsonResult ListarProdutos()
+        {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+            List<Produto> produtos = repositorio.SelecionarProdutos();
+            List<ProdutoExibicaoViewModel> viewModel = new List<ProdutoExibicaoViewModel>();
+
+            MapperUtils.MapearLista(produtos, viewModel);
+            for (int i = 0; i < viewModel.Count; i++)
+            {
+                viewModel[i].Autor = repositorio.SelecionarNomeAutor(produtos[i].IdAutor);
+                viewModel[i].Editora = repositorio.SelecionarNomeEditora(produtos[i].IdEditora);
+                viewModel[i].ProdutoTipo = repositorio.SelecionarDescricaoProdutoTipo(produtos[i].IdProdutoTipo);
+            }
+
+            return Json(new { data = viewModel } );
         }
         #endregion
 
         #region Tipo de Produto
-        public ActionResult CadProdutoTipo()
+        public Task<ActionResult> CadProdutoTipo()
         {
-            IRepositorio repositorio = new Repositorio.Repositorio();
-
-            ActionResult action = ValidarLogin(HttpContext);
-            if (action != null)
+            return Task.Run(() =>
             {
-                return action;
-            }
+                IRepositorio repositorio = new Repositorio.Repositorio();
 
-            List<ProdutoTipo> tiposProduto = repositorio.SelecionarTiposProdutos();
+                ActionResult action = ValidarLogin(HttpContext);
+                if (action != null)
+                {
+                    return action;
+                }
 
-            return View(tiposProduto);
+                List<ProdutoTipo> tiposProduto = repositorio.SelecionarTiposProdutos();
+
+                return View(tiposProduto);
+            });
         }
 
         [HttpPost]

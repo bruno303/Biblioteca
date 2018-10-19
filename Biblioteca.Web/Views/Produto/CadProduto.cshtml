@@ -31,6 +31,12 @@
                         Editora
                     </th>
                     <th>
+                        ISBN
+                    </th>
+                    <th class="text-center">
+                        Ano Publicação
+                    </th>
+                    <th>
                         Ações
                     </th>
                 </tr>
@@ -53,6 +59,12 @@
                     </td>
                     <td>
                         @item.Editora
+                    </td>
+                    <td>
+                        @item.Isbn
+                    </td>
+                    <td>
+                        @item.AnoPublicacao
                     </td>
                     <td>
                         <a href=@("/Produto/EditarProduto/" + item.IdProduto.ToString()) role="button" class="btn btn-success btn-sm">

@@ -55,7 +55,9 @@ namespace Biblioteca.Repositorio
                             IdAutor = Convert.ToInt32(linha[3].ToString()),
                             IdEditora = Convert.ToInt32(linha[4].ToString()),
                             Quantidade = Convert.ToInt32(linha[5].ToString()),
-                            Ativo = Convert.ToBoolean(linha[6].ToString())
+                            Ativo = Convert.ToBoolean(linha[6].ToString()),
+                            AnoPublicacao = Convert.ToInt32(linha[7].ToString()),
+                            Isbn = linha[8].ToString()
                         });
                     }
                 }
@@ -80,9 +82,9 @@ namespace Biblioteca.Repositorio
 
             try
             {
-                string query = string.Format("EXEC PRC_IU_PRODUTO {0}, '{1}', {2}, {3}, {4}, {5}, {6}",
+                string query = string.Format("EXEC PRC_IU_PRODUTO {0}, '{1}', {2}, {3}, {4}, {5}, {6}, {7}, '{8}'",
                     produto.IdProduto, produto.Descricao, produto.IdProdutoTipo, produto.IdAutor, produto.IdEditora,
-                    produto.Quantidade, produto.Ativo ? 1 : 0);
+                    produto.Quantidade, produto.Ativo ? 1 : 0, produto.AnoPublicacao, produto.Isbn);
                 retorno = conexao.ExecutarQuery(query);
             }
             catch (Exception)
@@ -117,6 +119,8 @@ namespace Biblioteca.Repositorio
                     retorno.IdEditora = Convert.ToInt32(dados.Rows[0][4].ToString());
                     retorno.Quantidade = Convert.ToInt32(dados.Rows[0][5].ToString());
                     retorno.Ativo = Convert.ToBoolean(dados.Rows[0][6].ToString());
+                    retorno.AnoPublicacao = Convert.ToInt32(dados.Rows[0][7].ToString());
+                    retorno.Isbn = dados.Rows[0][8].ToString();
                 }
             }
             catch (Exception)

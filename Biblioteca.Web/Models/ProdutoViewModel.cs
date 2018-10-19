@@ -33,6 +33,12 @@ namespace Biblioteca.Web.Models
         [Display(Name = "Ativo")]
         public bool Ativo { get; set; }
 
+        [Display(Name = "Ano Publicação")]
+        public int AnoPublicacao { get; set; }
+
+        [Display(Name = "ISBN")]
+        public string Isbn { get; set; }
+
         public List<Dominio.ProdutoTipo> ProdutosTipo { get; set; }
         public List<Dominio.Autor> Autores { get; set; }
         public List<Dominio.Editora> Editoras { get; set; }

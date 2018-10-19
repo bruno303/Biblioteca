@@ -35,7 +35,7 @@
 
             <div class="form-group">
                 @Html.LabelFor(p => p.VlMulta)
-                @Html.EditorFor(p => p.VlMulta, new { htmlAttributes = new { @class = "form-control number" } })
+                @Html.EditorFor(p => p.VlMulta, new { htmlAttributes = new { @class = "form-control number", id="inpMulta" } })
                 <br />
                 @Html.ValidationMessageFor(p => p.VlMulta, "", new { @class = "text-danger" }, "")
             </div>
@@ -54,3 +54,16 @@
     <div class="col-md-3"></div>
 </div>
 
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#inpMulta").keydown(function (event) {
+                console.log(event.which)
+                if (event.which == 190) {
+                    event.preventDefault()
+                }
+            })
+        })
+    </script>
+}
