@@ -34,7 +34,7 @@ namespace Biblioteca.Web.Models
         public bool Ativo { get; set; }
 
         [Display(Name = "Ano Publicação")]
-        public int AnoPublicacao { get; set; }
+        public int? AnoPublicacao { get; set; }
 
         [Display(Name = "ISBN")]
         public string Isbn { get; set; }

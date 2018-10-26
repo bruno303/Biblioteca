@@ -1,0 +1,32 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Bruno Oliveira
+-- Create date: 25/10/2018
+-- Description:	Retorna os dados do cliente informado, ou de todos
+-- =============================================
+CREATE PROCEDURE dbo.PRC_SEL_CLIENTE
+	@I_ID_CLIENTE INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+    IF EXISTS (SELECT TOP(1) ID_CLIENTE FROM CLIENTE WITH(NOLOCK) WHERE ID_CLIENTE = @I_ID_CLIENTE) BEGIN
+
+		SELECT ID_CLIENTE, NOME, DT_NASCIMENTO, ID_SEXO, ATIVO
+		FROM CLIENTE WITH(NOLOCK)
+		WHERE ID_CLIENTE = @I_ID_CLIENTE
+
+	END
+	ELSE BEGIN
+
+		SELECT ID_CLIENTE, NOME, DT_NASCIMENTO, ID_SEXO, ATIVO
+		FROM CLIENTE WITH(NOLOCK)
+
+	END
+
+	SET NOCOUNT OFF;
+END
+GO

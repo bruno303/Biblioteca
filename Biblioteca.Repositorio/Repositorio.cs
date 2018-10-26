@@ -439,5 +439,63 @@ namespace Biblioteca.Repositorio
             return autor.Nome;
         }
         #endregion
+
+        public List<Cliente> SelecionarClientes()
+        {
+            var query = " EXEC PRC_SEL_CLIENTE 0 ";
+            List<Cliente> clientes = new List<Cliente>();
+            DataTable dados = null;
+            Conexao conexao = new Conexao();
+
+            try
+            {
+                dados = conexao.RetornarDados(query);
+                if (dados.Rows.Count > 0)
+                {
+                    foreach (DataRow linha in dados.Rows)
+                    {
+                        clientes.Add(new Cliente()
+                        {
+                            IdCliente = Convert.ToInt32(linha[0].ToString()),
+                            Nome = linha[1].ToString(),
+                            DtNascimento = Convert.ToDateTime(linha[2].ToString()),
+                            IdSexo = Convert.ToInt32(linha[3].ToString()),
+                            Ativo = Convert.ToBoolean(linha[4].ToString())
+                        });
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                clientes = null;
+            }
+            return clientes;
+        }
+
+        public string GravarLocacao(Locacao locacao)
+        {
+            var retorno = string.Empty;
+            Conexao conexao = new Conexao();
+
+            try
+            {
+                var query = string.Format(" EXEC PRC_IU_LOCACAO {0}, {1}, {2}, '{3}', '{4}', {5}, {6}",
+                    locacao.IdLocacao.HasValue ? locacao.IdLocacao : 0,
+                    locacao.IdProduto,
+                    locacao.IdCliente,
+                    locacao.DtLocacao.ToString("yyyy-MM-dd HH:mm:ss"),
+                    locacao.DtLimiteDevolucao.ToString("yyyy-MM-dd HH:mm:ss"),
+                    locacao.DtDevolucao.HasValue ? "'" + locacao.DtDevolucao.Value.ToString("yyyy-MM-dd HH:mm:ss") + "'" : "NULL",
+                    locacao.IdUsuario);
+
+                conexao.ExecutarQuery(query);
+            }
+            catch(Exception ex)
+            {
+                retorno = ex.Message;
+            }
+
+            return retorno;
+        }
     }
 }
