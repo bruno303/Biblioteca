@@ -28,7 +28,7 @@ namespace Biblioteca.Web.Controllers
                 LocacaoExibicaoViewModel item = new LocacaoExibicaoViewModel
                 {
                     IdLocacao = locacao.IdLocacao.Value,
-                    DtLocacao = locacao.DtLocacao,
+                    DtLocacao = locacao.DtLocacao.ToString("dd/MM/yyyy HH:mm:ss"),
                     DtDevolucao = ((!locacao.DtDevolucao.HasValue) || (locacao.DtDevolucao.Value == new DateTime())) ? "" : locacao.DtDevolucao.Value.ToString("dd/MM/yyyy"),
                     DtLimiteDevolucao = locacao.DtLimiteDevolucao.ToString("dd/MM/yyyy"),
                     Cliente = repositorio.SelecionarNomeCliente(locacao.IdCliente),
