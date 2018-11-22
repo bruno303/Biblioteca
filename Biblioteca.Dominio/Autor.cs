@@ -6,6 +6,6 @@ namespace Biblioteca.Dominio
     {
         public int IdAutor { get; set; }
         public string Nome { get; set; }
-        public DateTime DtNascimento { get; set; }
+        public DateTime? DtNascimento { get; set; }
     }
 }

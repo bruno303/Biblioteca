@@ -15,7 +15,6 @@ namespace Biblioteca.Web.Models
         public string Nome { get; set; }
 
         [Display(Name = "Data Nascimento")]
-        [DataType(DataType.DateTime)]
-        public DateTime DtNascimento { get; set; }
+        public string DtNascimento { get; set; }
     }
 }
