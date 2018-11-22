@@ -3,57 +3,74 @@
     ViewData["Title"] = "Locação de Produtos";
 }
 
-@model LocacaoViewModel
+@model List<LocacaoExibicaoViewModel>
 
-<br />
 <div class="row">
-    <div class="col-md-1"></div>
-
-    <div class="col-md-10">
-        <a role="button" class="btn btn-outline-primary btn-block" href="/">Voltar</a>
+    <div class="col-md-12">
         <br />
+        <a class="btn btn-secondary btn-block padding-cima-baixo" role="button" href="/Locacao/NovaLocacao/">Adicionar</a>
+        <br />
+        <br />
+        <table class="table padding-cima-baixo datatable">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        ID Locação
+                    </th>
+                    <th class="text-center">
+                        Data
+                    </th>
+                    <th>
+                        Cliente
+                    </th>
+                    <th>
+                        Usuario
+                    </th>
+                    <th>
+                        Devolução
+                    </th>
+                    <th>
+                        Limite Devolução
+                    </th>
+                    <th>
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr @Html.DisplayText(/*item.Atrasado ? */"class=\"table-danger\"")>
+                    <td class="text-center">
+                        @item.IdLocacao
+                    </td>
+                    <td>
+                        @item.DtLocacao
+                    </td>
+                    <td>
+                        @item.Cliente
+                    </td>
+                    <td>
+                        @item.Usuario
+                    </td>
+                    <td>
+                        @{ var strDtDevolucao = string.IsNullOrEmpty(item.DtDevolucao) ? "" : item.DtDevolucao;}
+                        @strDtDevolucao
+                    </td>
+                    <td>
+                        @item.DtLimiteDevolucao
+                    </td>
+                    <td>
+                        <a href=@("/Locacao/Devolver/" + item.IdLocacao.ToString()) role="button" class="btn btn-success btn-sm">
+                            <i class="glyphicon glyphicon-pencil"></i> Devolver
+                        </a>
+                        <a href=@("/Locacao/Editar/" + item.IdLocacao.ToString()) role="button" class="btn btn-outline-success btn-sm">
+                            <i class="glyphicon glyphicon-pencil"></i> Editar
+                        </a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
     </div>
-
-    <div class="col-md-1"></div>
-</div>
-<div class="row">
-    <div class="col-md-1"></div>
-
-    <div class="col-md-10">
-        <form method="post" action="/Locacao/Gravar/" role="form">
-            @Html.AntiForgeryToken()
-                <div class="form-group" hidden>
-                    @Html.LabelFor(p => p.IdLocacao)
-                    @Html.TextBoxFor(p => p.IdLocacao, new { @class = "form-control", @readonly = true })
-                    <br />
-                    @Html.ValidationMessageFor(p => p.IdLocacao, "", new { @class = "text-danger" }, "")
-                </div>
-                    <div class="form-group">
-                        @Html.LabelFor(p => p.IdCliente)
-                        @Html.DropDownListFor(p => p.IdCliente, new SelectList(Model.Clientes, "IdCliente", "Nome"), "SELECIONE", new { @class = "form-control" })
-                        <br />
-                        @Html.ValidationMessageFor(p => p.IdCliente, "", new { @class = "text-danger" }, "")
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(p => p.IdProduto)
-                        @Html.DropDownListFor(p => p.IdProduto, new SelectList(Model.Produtos, "IdProduto", "Descricao"), "SELECIONE", new { @class = "form-control" })
-                        <br />
-                        @Html.ValidationMessageFor(p => p.IdProduto, "", new { @class = "text-danger" }, "")
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(p => p.DtDevolucao)
-                        @Html.EditorFor(p => p.DtDevolucao, new { htmlAttributes = new { @class = "form-control" } })
-                        <br />
-                        @Html.ValidationMessageFor(p => p.DtDevolucao, "", new { @class = "text-danger" }, "")
-                    </div>
-
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <br />
-            <input type="submit" value="Confirmar" class="btn btn-primary" />
-        </form>
-    </div>
-
-    <div class="col-md-1"></div>
 </div>

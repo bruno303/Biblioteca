@@ -18,7 +18,10 @@ namespace Biblioteca.Web.Models
         public int IdProduto { get; set; }
 
         [Display(Name = "Data de Devolução")]
-        public DateTime? DtDevolucao { get; set; }
+        public string DtDevolucao { get; set; }
+
+        [Display(Name = "Data Máxima Devolução")]
+        public string DtLimiteDevolucao { get; set; }
 
         public List<Cliente> Clientes { get; set; }
         public List<Produto> Produtos { get; set; }

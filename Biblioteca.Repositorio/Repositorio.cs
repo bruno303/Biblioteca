@@ -497,5 +497,143 @@ namespace Biblioteca.Repositorio
 
             return retorno;
         }
+
+        public string DevolverLocacao(Locacao locacao)
+        {
+            var retorno = string.Empty;
+            Conexao conexao = new Conexao();
+
+            try
+            {
+                if ((!locacao.DtDevolucao.HasValue) || (locacao.DtDevolucao.Value == new DateTime()))
+                {
+                    locacao.DtDevolucao = DateTime.Now;
+                }
+                return GravarLocacao(locacao);
+            }
+            catch (Exception ex)
+            {
+                retorno = ex.Message;
+            }
+
+            return retorno;
+        }
+
+        public List<Locacao> SelecionarLocacoes()
+        {
+            var locacoes = new List<Locacao>();
+            var conexao = new Conexao();
+            DataTable dados = null;
+
+            try
+            {
+                dados = conexao.RetornarDados(" EXEC PRC_SEL_LOCACAO 0 ");
+                if ((dados?.Rows?.Count ?? 0) > 0)
+                {
+                    for (int cont = 0; cont < dados.Rows.Count; cont++)
+                    {
+                        DateTime dataDevolucao;
+                        var locacao = new Locacao()
+                        {
+                            IdLocacao = Convert.ToInt32(dados.Rows[cont][0].ToString()),
+                            IdProduto = Convert.ToInt32(dados.Rows[cont][1].ToString()),
+                            IdCliente = Convert.ToInt32(dados.Rows[cont][2].ToString()),
+                            DtLocacao = Convert.ToDateTime(dados.Rows[cont][3].ToString()),
+                            DtLimiteDevolucao = Convert.ToDateTime(dados.Rows[cont][4].ToString()),
+                            IdUsuario = Convert.ToInt32(dados.Rows[cont][6].ToString())
+                        };
+                        DateTime.TryParse(dados.Rows[cont][5].ToString(), out dataDevolucao);
+                        locacao.DtDevolucao = dataDevolucao;
+                        locacoes.Add(locacao);
+                    }
+                }
+
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            return locacoes;
+        }
+
+        public string SelecionarNomeProduto(int idProduto)
+        {
+            var produto = SelecionarProdutoPorId(idProduto);
+            return produto?.Descricao ?? string.Empty;
+        }
+
+        public string SelecionarNomeCliente(int id)
+        {
+            var retorno = string.Empty;
+            var conexao = new Conexao();
+            DataTable dados = null;
+
+            try
+            {
+                dados = conexao.RetornarDados(" SELECT NOME FROM CLIENTE WITH(NOLOCK) WHERE ID_CLIENTE = " + id.ToString());
+                if ((dados?.Rows?.Count ?? 0) > 0)
+                {
+                    retorno = dados.Rows[0][0].ToString();
+                }
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return retorno;
+        }
+
+        public string SelecionarNomeUsuario(int id)
+        {
+            var retorno = string.Empty;
+            var conexao = new Conexao();
+            DataTable dados = null;
+
+            try
+            {
+                dados = conexao.RetornarDados(" SELECT NOME FROM USUARIO WITH(NOLOCK) WHERE ID_USUARIO = " + id.ToString());
+                if ((dados?.Rows?.Count ?? 0) > 0)
+                {
+                    retorno = dados.Rows[0][0].ToString();
+                }
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return retorno;
+        }
+
+        public Locacao SelecionarLocacaoPorId(int id)
+        {
+            var locacao = new Locacao();
+            var conexao = new Conexao();
+            DataTable dados = null;
+
+            try
+            {
+                dados = conexao.RetornarDados(string.Format(" EXEC PRC_SEL_LOCACAO {0} ", id));
+                if ((dados?.Rows?.Count ?? 0) > 0)
+                {
+                    DateTime dataDevolucao;
+                    locacao.IdLocacao = Convert.ToInt32(dados.Rows[0][0].ToString());
+                    locacao.IdProduto = Convert.ToInt32(dados.Rows[0][1].ToString());
+                    locacao.IdCliente = Convert.ToInt32(dados.Rows[0][2].ToString());
+                    locacao.DtLocacao = Convert.ToDateTime(dados.Rows[0][3].ToString());
+                    locacao.DtLimiteDevolucao = Convert.ToDateTime(dados.Rows[0][4].ToString());
+                    DateTime.TryParse(dados.Rows[0][5].ToString(), out dataDevolucao);
+                    locacao.DtDevolucao = dataDevolucao;
+                    locacao.IdUsuario = Convert.ToInt32(dados.Rows[0][6].ToString());
+                }
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return locacao;
+        }
     }
 }
