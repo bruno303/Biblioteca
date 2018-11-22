@@ -4,6 +4,7 @@ using Biblioteca.Web.Classes;
 using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -277,8 +278,18 @@ namespace Biblioteca.Web.Controllers
             }
 
             List<Autor> autores = repositorio.SelecionarAutores();
+            List<AutorViewModel> viewModel = new List<AutorViewModel>();
+            foreach (var autor in autores)
+            {
+                viewModel.Add(new AutorViewModel()
+                {
+                    IdAutor = autor.IdAutor,
+                    Nome = autor.Nome,
+                    DtNascimento = autor.DtNascimento.HasValue ? autor.DtNascimento.Value.ToString("dd/MM/yyyy") : ""
+                });
+            }
 
-            return View(autores);
+            return View(viewModel);
         }
 
         public ActionResult EditarAutor(int id)
@@ -298,11 +309,12 @@ namespace Biblioteca.Web.Controllers
             }
 
             Autor autor = repositorio.SelecionarAutorPorId(id);
+
             AutorViewModel model = new AutorViewModel()
             {
                 IdAutor = autor.IdAutor,
                 Nome = autor.Nome,
-                DtNascimento = autor.DtNascimento
+                DtNascimento = autor.DtNascimento.HasValue ? autor.DtNascimento.Value.ToString("yyyy-MM-dd") : ""
             };
 
             ViewBag.Adicionar = false;
@@ -327,7 +339,7 @@ namespace Biblioteca.Web.Controllers
                 {
                     IdAutor = autorViewModel.IdAutor ?? 0,
                     Nome = autorViewModel.Nome,
-                    DtNascimento = autorViewModel.DtNascimento
+                    DtNascimento = string.IsNullOrEmpty(autorViewModel.DtNascimento) ? null : (DateTime?)Convert.ToDateTime(autorViewModel.DtNascimento)
                 };
 
                 repositorio.AtualizarAutor(autor);

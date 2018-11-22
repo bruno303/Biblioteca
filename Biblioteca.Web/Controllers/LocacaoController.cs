@@ -25,6 +25,16 @@ namespace Biblioteca.Web.Controllers
             var locacoes = repositorio.SelecionarLocacoes();
             foreach (var locacao in locacoes)
             {
+                var atrasado = false;
+                if (locacao.DtDevolucao.HasValue && locacao.DtDevolucao.Value != new DateTime())
+                {
+                    atrasado = locacao.DtDevolucao.Value > locacao.DtLimiteDevolucao;
+                }
+                else
+                {
+                    atrasado = DateTime.Now > locacao.DtLimiteDevolucao;
+                }
+
                 LocacaoExibicaoViewModel item = new LocacaoExibicaoViewModel
                 {
                     IdLocacao = locacao.IdLocacao.Value,
@@ -34,7 +44,7 @@ namespace Biblioteca.Web.Controllers
                     Cliente = repositorio.SelecionarNomeCliente(locacao.IdCliente),
                     Usuario = repositorio.SelecionarNomeUsuario(locacao.IdUsuario),
                     Produto = repositorio.SelecionarNomeProduto(locacao.IdProduto),
-                    Atrasado = locacao.DtLimiteDevolucao < DateTime.Now && (locacao.DtDevolucao == null || locacao.DtDevolucao == new DateTime())
+                    Atrasado = atrasado
                 };
                 viewModel.Add(item);
             }

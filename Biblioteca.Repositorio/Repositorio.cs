@@ -416,7 +416,8 @@ namespace Biblioteca.Repositorio
             {
                 if (autor != null)
                 {
-                    string query = string.Format("EXEC PRC_IU_AUTOR {0}, '{1}', '{2}'", autor.IdAutor, autor.Nome, autor.DtNascimento.ToString("yyyy-MM-dd HH:mm:ss"));
+                    var dtNascimento = autor.DtNascimento.HasValue ? "'" + autor.DtNascimento.Value.ToString("yyyy-MM-dd HH:mm:ss") + "'" : "NULL";
+                    string query = string.Format("EXEC PRC_IU_AUTOR {0}, '{1}', {2}", autor.IdAutor, autor.Nome, dtNascimento);
                     retorno = conexao.ExecutarQuery(query);
                 }
             }

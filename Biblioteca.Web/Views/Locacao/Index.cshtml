@@ -5,10 +5,12 @@
 
 @model List<LocacaoExibicaoViewModel>
 
+<h2 class="padding-cima-baixo">@ViewData["Title"]</h2>
+
 <div class="row">
     <div class="col-md-12">
         <br />
-        <a class="btn btn-secondary btn-block padding-cima-baixo" role="button" href="/Locacao/NovaLocacao/">Adicionar</a>
+        <a class="btn btn-secondary padding-cima-baixo" role="button" href="/Locacao/NovaLocacao/">Nova Locação</a>
         <br />
         <br />
         <table class="table padding-cima-baixo datatable">
@@ -27,6 +29,9 @@
                         Usuario
                     </th>
                     <th>
+                        Produto
+                    </th>
+                    <th>
                         Devolução
                     </th>
                     <th>
@@ -40,7 +45,10 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                <tr @Html.DisplayText(/*item.Atrasado ? */"class=\"table-danger\"")>
+                    var strAtrasado = item.Atrasado ? "class=table-danger" : "";
+
+
+                <tr @strAtrasado>
                     <td class="text-center">
                         @item.IdLocacao
                     </td>
@@ -52,6 +60,9 @@
                     </td>
                     <td>
                         @item.Usuario
+                    </td>
+                    <td>
+                        @item.Produto
                     </td>
                     <td>
                         @{ var strDtDevolucao = string.IsNullOrEmpty(item.DtDevolucao) ? "" : item.DtDevolucao;}
