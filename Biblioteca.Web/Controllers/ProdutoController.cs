@@ -1,49 +1,142 @@
 ﻿using Biblioteca.Dominio;
+using Biblioteca.Utils;
 using Biblioteca.Web.Classes;
 using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using X.PagedList;
+using System.Threading.Tasks;
 
 namespace Biblioteca.Web.Controllers
 {
     public class ProdutoController : Controller
     {
+        #region Produto
         public ActionResult CadProduto()
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
-            List<Produto> produtos = new Repositorio.Repositorio().SelecionarProdutos();
-            return View(produtos);
+            List<Produto> produtos = repositorio.SelecionarProdutos();
+            List<ProdutoExibicaoViewModel> produtosExibicao = new List<ProdutoExibicaoViewModel>();
+            foreach (Produto prod in produtos)
+            {
+                produtosExibicao.Add(new ProdutoExibicaoViewModel()
+                {
+                    IdProduto = prod.IdProduto,
+                    Descricao = prod.Descricao,
+                    Ativo = prod.Ativo,
+                    Quantidade = prod.Quantidade,
+                    Autor = repositorio.SelecionarNomeAutor(prod.IdAutor),
+                    Editora = repositorio.SelecionarNomeEditora(prod.IdEditora),
+                    ProdutoTipo = repositorio.SelecionarDescricaoProdutoTipo(prod.IdProdutoTipo),
+                    AnoPublicacao = prod.AnoPublicacao,
+                    Isbn = prod.Isbn
+                });
+            }
+
+
+            return View(produtosExibicao);
         }
 
-        #region Tipo de Produto
-        public ActionResult CadProdutoTipo(int? page = 0)
+        public ActionResult EditarProduto(int id)
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+            ProdutoViewModel produtoViewModel = new ProdutoViewModel();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
-            if (page == null || page == 0)
+
+            if (id == 0)
             {
-                page = 1;
+                ViewBag.Adicionar = true;
+                return View(produtoViewModel);
             }
-            IQueryable<ProdutoTipo> tiposProduto = new Repositorio.Repositorio().SelecionarTiposProdutosQuery();
-            var umaPaginaDados = tiposProduto.ToPagedList((int)page, 10);
+            else
+            {
+                ViewBag.Adicionar = false;
+            }
 
-            ViewBag.Dados = umaPaginaDados;
+            Produto produto = repositorio.SelecionarProdutoPorId(id);
 
-            return View(tiposProduto);
+            MapperUtils.Mapear(produto, produtoViewModel);
+
+            return View(produtoViewModel);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditarProduto(ProdutoViewModel produtoViewModel)
+        {
+            ActionResult action = ValidarLogin(HttpContext);
+            if (action != null)
+            {
+                return action;
+            }
+
+            if (produtoViewModel != null && ModelState.IsValid)
+            {
+                IRepositorio repositorio = new Repositorio.Repositorio();
+
+                Produto produto = new Produto();
+                MapperUtils.Mapear(produtoViewModel, produto);
+
+                repositorio.AtualizarProduto(produto);
+            }
+            else
+            {
+                ModelState.AddModelError("erro_binding", "Erro nos parâmetros informados");
+                return RedirectToAction("EditarProduto", "Produto");
+            }
+            return RedirectToAction("CadProduto", "Produto");
+        }
+
+        public JsonResult ListarProdutos()
+        {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+            List<Produto> produtos = repositorio.SelecionarProdutos();
+            List<ProdutoExibicaoViewModel> viewModel = new List<ProdutoExibicaoViewModel>();
+
+            MapperUtils.MapearLista(produtos, viewModel);
+            for (int i = 0; i < viewModel.Count; i++)
+            {
+                viewModel[i].Autor = repositorio.SelecionarNomeAutor(produtos[i].IdAutor);
+                viewModel[i].Editora = repositorio.SelecionarNomeEditora(produtos[i].IdEditora);
+                viewModel[i].ProdutoTipo = repositorio.SelecionarDescricaoProdutoTipo(produtos[i].IdProdutoTipo);
+            }
+
+            return Json(new { data = viewModel } );
+        }
+        #endregion
+
+        #region Tipo de Produto
+        public Task<ActionResult> CadProdutoTipo()
+        {
+            return Task.Run(() =>
+            {
+                IRepositorio repositorio = new Repositorio.Repositorio();
+
+                ActionResult action = ValidarLogin(HttpContext);
+                if (action != null)
+                {
+                    return action;
+                }
+
+                List<ProdutoTipo> tiposProduto = repositorio.SelecionarTiposProdutos();
+
+                return View(tiposProduto);
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditarProdutoTipo(ProdutoTipoViewModel produtoTipo)
         {
             ActionResult action = ValidarLogin(HttpContext);
@@ -51,23 +144,30 @@ namespace Biblioteca.Web.Controllers
             {
                 return action;
             }
-            IRepositorio repositorio = new Repositorio.Repositorio();
-            ProdutoTipo produtoAlterar = new ProdutoTipo()
-            {
-                IdProdutoTipo = produtoTipo.IdProdutoTipo,
-                Descricao = produtoTipo.Descricao,
-                Prazo = produtoTipo.Prazo,
-                VlMulta = produtoTipo.VlMulta,
-                Ativo = produtoTipo.Ativo
-            };
 
-            repositorio.AtualizarProdutoTipo(produtoAlterar);
+            if (produtoTipo != null && ModelState.IsValid)
+            {
+                IRepositorio repositorio = new Repositorio.Repositorio();
+
+                ProdutoTipo produtoAlterar = new ProdutoTipo()
+                {
+                    IdProdutoTipo = produtoTipo.IdProdutoTipo ?? 0,
+                    Descricao = produtoTipo.Descricao,
+                    Prazo = produtoTipo.Prazo,
+                    VlMulta = produtoTipo.VlMulta,
+                    Ativo = produtoTipo.Ativo
+                };
+
+                repositorio.AtualizarProdutoTipo(produtoAlterar);
+            }
 
             return RedirectToAction("CadProdutoTipo", "Produto");
         }
 
         public ActionResult EditarProdutoTipo(int id)
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
@@ -80,7 +180,7 @@ namespace Biblioteca.Web.Controllers
                 return View();
             }
 
-            ProdutoTipo produtoTipo = new Repositorio.Repositorio().SelecionarProdutoTipoPorId(id);
+            ProdutoTipo produtoTipo = repositorio.SelecionarProdutoTipoPorId(id);
             ProdutoTipoViewModel model = new ProdutoTipoViewModel()
             {
                 IdProdutoTipo = produtoTipo.IdProdutoTipo,
@@ -97,23 +197,22 @@ namespace Biblioteca.Web.Controllers
         #endregion
 
         #region Editora
-        public ActionResult CadEditora(int? page)
+        public ActionResult CadEditora()
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
+            List<Editora> editoras = repositorio.SelecionarEditoras();
 
-            if (page == null || page == 0) { page = 1; }
-
-            IQueryable<Editora> editoras = new Repositorio.Repositorio().SelecionarEditorasQuery();
-            ViewBag.Dados = editoras.ToPagedList((int)page, 10);
-
-            return View();
+            return View(editoras);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditarEditora(EditoraViewModel editoraViewModel)
         {
             ActionResult action = ValidarLogin(HttpContext);
@@ -121,13 +220,13 @@ namespace Biblioteca.Web.Controllers
             {
                 return action;
             }
-            if (editoraViewModel != null )
+            if (editoraViewModel != null && ModelState.IsValid)
             {
                 IRepositorio repositorio = new Repositorio.Repositorio();
 
                 Editora editora = new Editora()
                 {
-                    IdEditora = editoraViewModel.IdEditora,
+                    IdEditora = editoraViewModel.IdEditora ?? 0,
                     Nome = editoraViewModel.Nome
                 };
 
@@ -139,6 +238,8 @@ namespace Biblioteca.Web.Controllers
 
         public ActionResult EditarEditora(int id)
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
@@ -151,7 +252,7 @@ namespace Biblioteca.Web.Controllers
                 return View();
             }
 
-            Editora editora = new Repositorio.Repositorio().SelecionarEditoraPorId(id);
+            Editora editora = repositorio.SelecionarEditoraPorId(id);
             EditoraViewModel model = new EditoraViewModel()
             {
                 IdEditora = editora.IdEditora,
@@ -165,27 +266,25 @@ namespace Biblioteca.Web.Controllers
         #endregion
 
         #region Autor
-        public ActionResult CadAutor(int? page)
+        public ActionResult CadAutor()
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
                 return action;
             }
 
-            if (page == null || page == 0)
-            {
-                page = 1;
-            }
+            List<Autor> autores = repositorio.SelecionarAutores();
 
-            IQueryable<Autor> autores = new Repositorio.Repositorio().SelecionarAutoresQuery();
-            ViewBag.Dados = autores.ToPagedList((int)page, 10);
-
-            return View();
+            return View(autores);
         }
 
         public ActionResult EditarAutor(int id)
         {
+            IRepositorio repositorio = new Repositorio.Repositorio();
+
             ActionResult action = ValidarLogin(HttpContext);
             if (action != null)
             {
@@ -198,7 +297,7 @@ namespace Biblioteca.Web.Controllers
                 return View();
             }
 
-            Autor autor = new Repositorio.Repositorio().SelecionarAutorPorId(id);
+            Autor autor = repositorio.SelecionarAutorPorId(id);
             AutorViewModel model = new AutorViewModel()
             {
                 IdAutor = autor.IdAutor,
@@ -212,6 +311,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditarAutor(AutorViewModel autorViewModel)
         {
             ActionResult action = ValidarLogin(HttpContext);
@@ -219,13 +319,13 @@ namespace Biblioteca.Web.Controllers
             {
                 return action;
             }
-            if (autorViewModel != null)
+            if (autorViewModel != null && ModelState.IsValid)
             {
                 IRepositorio repositorio = new Repositorio.Repositorio();
 
                 Autor autor = new Autor()
                 {
-                    IdAutor = autorViewModel.IdAutor,
+                    IdAutor = autorViewModel.IdAutor ?? 0,
                     Nome = autorViewModel.Nome,
                     DtNascimento = autorViewModel.DtNascimento
                 };

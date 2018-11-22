@@ -2,106 +2,78 @@
 @{
     ViewData["Title"] = "Cadastro de Produtos";
 }
+@model List<ProdutoExibicaoViewModel>
 
 <h2 class="padding-cima-baixo">@ViewData["Title"]</h2>
 
 <div class="row">
     <div class="col-md-12">
-        <button class="btn btn-secondary padding-cima-baixo" type="button">
-            Adicionar
-        </button>
-    </div>
-    <div class="col-md-12">
-        <table class="table padding-cima-baixo">
+        <br />
+        <a class="btn btn-secondary padding-cima-baixo" role="button" href="/Produto/EditarProduto/0">Adicionar</a>
+        <br />
+        <br />
+        <table class="table padding-cima-baixo datatable">
             <thead>
                 <tr>
-                    <th>
-                        #
+                    <th class="text-center">
+                        ID
+                    </th>
+                    <th class="text-center">
+                        Descrição
+                    </th>
+                    <th class="text-center">
+                        Tipo de Produto
+                    </th>
+                    <th class="text-center">
+                        Autor
+                    </th>
+                    <th class="text-center">
+                        Editora
                     </th>
                     <th>
-                        Product
+                        ISBN
+                    </th>
+                    <th class="text-center">
+                        Ano Publicação
                     </th>
                     <th>
-                        Payment Taken
-                    </th>
-                    <th>
-                        Status
+                        Ações
                     </th>
                 </tr>
             </thead>
             <tbody>
+                @foreach (var item in Model)
+                {
                 <tr>
-                    <td>
-                        1
+                    <td class="text-center">
+                        @item.IdProduto
                     </td>
                     <td>
-                        TB - Monthly
+                        @item.Descricao
                     </td>
                     <td>
-                        01/04/2012
+                        @item.ProdutoTipo
                     </td>
                     <td>
-                        Default
-                    </td>
-                </tr>
-                <tr class="table-active">
-                    <td>
-                        1
+                        @item.Autor
                     </td>
                     <td>
-                        TB - Monthly
+                        @item.Editora
                     </td>
                     <td>
-                        01/04/2012
+                        @item.Isbn
                     </td>
                     <td>
-                        Approved
-                    </td>
-                </tr>
-                <tr class="table-success">
-                    <td>
-                        2
+                        @item.AnoPublicacao
                     </td>
                     <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        02/04/2012
-                    </td>
-                    <td>
-                        Declined
+                        <a href=@("/Produto/EditarProduto/" + item.IdProduto.ToString()) role="button" class="btn btn-success btn-sm">
+                            <i class="glyphicon glyphicon-pencil"></i> Editar
+                        </a>
                     </td>
                 </tr>
-                <tr class="table-warning">
-                    <td>
-                        3
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        03/04/2012
-                    </td>
-                    <td>
-                        Pending
-                    </td>
-                </tr>
-                <tr class="table-danger">
-                    <td>
-                        4
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        04/04/2012
-                    </td>
-                    <td>
-                        Call in to confirm
-                    </td>
-                </tr>
+                }
             </tbody>
         </table>
     </div>
 </div>
-

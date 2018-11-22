@@ -2,15 +2,17 @@
 @{
     ViewData["Title"] = "Cadastro de Editoras";
 }
-@using X.PagedList;
-@using X.PagedList.Mvc.Core;
+@model List<Biblioteca.Dominio.Editora>
 
 <h2 class="padding-cima-baixo">@ViewData["Title"]</h2>
 
 <div class="row">
     <div class="col-md-12">
+        <br />
         <a class="btn btn-secondary padding-cima-baixo" role="button" href="/Produto/EditarEditora/0">Adicionar</a>
-        <table class="table padding-cima-baixo">
+        <br />
+        <br />
+        <table class="table padding-cima-baixo datatable">
             <thead>
                 <tr>
                     <th class="text-center">
@@ -25,7 +27,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in ViewBag.Dados)
+                @foreach (var item in Model)
                 {
                     <tr>
                         <td class="text-center">
@@ -43,6 +45,5 @@
                 }
             </tbody>
         </table>
-        @Html.PagedListPager((IPagedList)ViewBag.Dados, page => Url.Action("CadEditoras", new { page }))
     </div>
 </div>

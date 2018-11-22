@@ -1,6 +1,7 @@
 ﻿@model AutorViewModel
 @{
     ViewData["Title"] = "Edição - Autor";
+    Html.Html5DateRenderingMode = Html5DateRenderingMode.CurrentCulture;
 }
 
 <br />
@@ -11,6 +12,7 @@
         <a role="button" class="btn btn-outline-primary btn-block" href="/Produto/CadAutor/">Voltar</a>
         <br />
         <form method="post" action="/Produto/EditarAutor/" role="form">
+            @Html.AntiForgeryToken()
             <div class="form-group" hidden>
                 @Html.LabelFor(p => p.IdAutor)
                 @Html.TextBoxFor(p => p.IdAutor, new { @class = "form-control" })
@@ -27,7 +29,7 @@
 
             <div class="form-group">
                 @Html.LabelFor(p => p.DtNascimento)
-                @Html.TextBoxFor(p => p.DtNascimento, new { @class = "form-control" })
+                @Html.EditorFor(p => p.DtNascimento, new { htmlAttributes = new { @class = "form-control" } })
                 <br />
                 @Html.ValidationMessageFor(p => p.DtNascimento, "", new { @class = "text-danger" }, "")
             </div>

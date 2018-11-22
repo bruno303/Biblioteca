@@ -3,5 +3,74 @@
     ViewData["Title"] = "Locação de Produtos";
 }
 
-<h2>@ViewData["Title"]</h2>
+@model List<LocacaoExibicaoViewModel>
 
+<div class="row">
+    <div class="col-md-12">
+        <br />
+        <a class="btn btn-secondary btn-block padding-cima-baixo" role="button" href="/Locacao/NovaLocacao/">Adicionar</a>
+        <br />
+        <br />
+        <table class="table padding-cima-baixo datatable">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        ID Locação
+                    </th>
+                    <th class="text-center">
+                        Data
+                    </th>
+                    <th>
+                        Cliente
+                    </th>
+                    <th>
+                        Usuario
+                    </th>
+                    <th>
+                        Devolução
+                    </th>
+                    <th>
+                        Limite Devolução
+                    </th>
+                    <th>
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr @Html.DisplayText(/*item.Atrasado ? */"class=\"table-danger\"")>
+                    <td class="text-center">
+                        @item.IdLocacao
+                    </td>
+                    <td>
+                        @item.DtLocacao
+                    </td>
+                    <td>
+                        @item.Cliente
+                    </td>
+                    <td>
+                        @item.Usuario
+                    </td>
+                    <td>
+                        @{ var strDtDevolucao = string.IsNullOrEmpty(item.DtDevolucao) ? "" : item.DtDevolucao;}
+                        @strDtDevolucao
+                    </td>
+                    <td>
+                        @item.DtLimiteDevolucao
+                    </td>
+                    <td>
+                        <a href=@("/Locacao/Devolver/" + item.IdLocacao.ToString()) role="button" class="btn btn-success btn-sm">
+                            <i class="glyphicon glyphicon-pencil"></i> Devolver
+                        </a>
+                        <a href=@("/Locacao/Editar/" + item.IdLocacao.ToString()) role="button" class="btn btn-outline-success btn-sm">
+                            <i class="glyphicon glyphicon-pencil"></i> Editar
+                        </a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

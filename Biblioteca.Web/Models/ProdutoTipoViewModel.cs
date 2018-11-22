@@ -5,10 +5,9 @@ namespace Biblioteca.Web.Models
 {
     public class ProdutoTipoViewModel
     {
-        [Required(ErrorMessage = "É necessário informar o ID.")]
         [Display(Name = "ID")]
         [ReadOnly(true)]
-        public int IdProdutoTipo { get; set; }
+        public int? IdProdutoTipo { get; set; }
 
         [Required(ErrorMessage = "É necessário informar a descrição.")]
         [Display(Name = "Descrição")]

@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Biblioteca.Web.Models
 {
     public class EditoraViewModel
     {
-        [Required(ErrorMessage = "É necessário informar o ID.")]
         [Display(Name = "ID")]
-        public int IdEditora { get; set; }
+        [ReadOnly(true)]
+        public int? IdEditora { get; set; }
 
         [Required(ErrorMessage = "É necessário informar o nome da editora.")]
         [Display(Name = "Nome")]

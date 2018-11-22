@@ -33,6 +33,25 @@ namespace Biblioteca.Web.Classes
             return retorno;
         }
 
+        public static int GetIdUsuario(HttpContext httpContext)
+        {
+            int retorno = 0;
+
+            try
+            {
+                if (httpContext != null)
+                {
+                    retorno = (int)httpContext.Session.GetInt32("idUsuario");
+                }
+            }
+            catch(Exception)
+            {
+                retorno = 0;
+            }
+
+            return retorno;
+        }
+
         /// <summary>
         /// Verifica se há sessão ativa.
         /// </summary>
